@@ -86,15 +86,15 @@ public class RecipeGUI {
 		selectedRecipe.setLayout(null);
 
 		JLabel lblrecipeName = new JLabel("(Recipe name)", SwingConstants.CENTER);
-		lblrecipeName.setBounds(12, 13, 454, 30);
+		lblrecipeName.setBounds(12, 36, 454, 30);
 		selectedRecipe.add(lblrecipeName);
 
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(22, 43, 444, 8);
+		separator_1.setBounds(22, 68, 444, 8);
 		selectedRecipe.add(separator_1);
 
 		JLabel lbllistOfIngredients = new JLabel("(List of ingredients?)");
-		lbllistOfIngredients.setBounds(22, 56, 444, 124);
+		lbllistOfIngredients.setBounds(12, 69, 454, 111);
 		selectedRecipe.add(lbllistOfIngredients);
 
 		JSeparator separator_2 = new JSeparator();
@@ -110,19 +110,39 @@ public class RecipeGUI {
 		lblTimer.setBounds(154, 476, 134, 56);
 		selectedRecipe.add(lblTimer);
 
-		JButton btnStart = new JButton("Start?");
-		btnStart.addMouseListener(new MouseAdapter() {
+		
+		JButton btnSelectedBack = new JButton("Back");
+		btnSelectedBack.setBounds(12, 13, 70, 24);
+		btnSelectedBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cardLayout.show(mainPanel, "First Screen");
+			}
+		});
+		selectedRecipe.add(btnSelectedBack);
+		
+		JButton btnStartTimer = new JButton("Start Timer");
+		btnStartTimer.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent arg0) {
 				//Start timer --- get from other text boxes
-				int cookTime = 500;
-				Clock alarm =  new Clock(cookTime);
+				time = 10;
+				Clock alarm =  new Clock(time);
 				timer = new Timer(1000, alarm);
 				timer.start();
 
 			}
 		});
-		btnStart.setBounds(369, 507, 97, 25);
-		selectedRecipe.add(btnStart);
+		btnStartTimer.setBounds(356, 476, 110, 25);
+		selectedRecipe.add(btnStartTimer);
+		
+		JButton btnEndTimer = new JButton("Reset Timer"); //Need to figure out how to actually just "Stop/resume" the timer
+		btnEndTimer.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent arg0) {
+				//End Timer
+				timer.stop();
+			}
+		});
+		btnEndTimer.setBounds(356, 507, 110, 25);
+		selectedRecipe.add(btnEndTimer);
 
 		firstScreen.setLayout(null);
 		selectRecipe.setLayout(null);
@@ -133,7 +153,6 @@ public class RecipeGUI {
 		lblTitle.setFont(lblTitle.getFont().deriveFont(24f));
 		firstScreen.add(lblTitle);
 
-		//BUTTONS
 		JButton btnSelectRecipe = new JButton("Select Recipe");
 		btnSelectRecipe.setBounds(180, 259, 116, 40);
 		btnSelectRecipe.addActionListener(new ActionListener() {
@@ -233,30 +252,43 @@ public class RecipeGUI {
 		JLabel lblMinutes = new JLabel("minutes");
 		lblMinutes.setBounds(240, 493, 50, 29);
 		inputRecipe.add(lblMinutes);
+		
+		JButton btnDone = new JButton("Done");
+		btnDone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//Enter what happens when user is finished entering their recipe
+			}
+		});
+		btnDone.setBounds(339, 493, 127, 29);
+		inputRecipe.add(btnDone);
 
 		//OTHER STUFF
 		DefaultListModel listModel = new DefaultListModel();
 		listModel.addElement("Brownies");
 		listModel.addElement("Chocolate cake");
 		listModel.addElement("Vanilla cake");
+		listModel.addElement("And");
 		listModel.addElement("Other stuff");
-		listModel.addElement("asas1");
-		listModel.addElement("asas2");
-		listModel.addElement("asas3");
-		listModel.addElement("asas4");
-		listModel.addElement("asas5");
-		listModel.addElement("asas6");
-		listModel.addElement("asas7");
-		listModel.addElement("asas8");
-		listModel.addElement("asas9");
-		listModel.addElement("asas10");
-		listModel.addElement("asas4");
-		listModel.addElement("asas5");
-		listModel.addElement("asas6");
-		listModel.addElement("asas7");
-		listModel.addElement("asas8");
-		listModel.addElement("asas9");
-		listModel.addElement("asas10");
+		listModel.addElement("Vera");
+		listModel.addElement("Julie");
+		listModel.addElement("Steven");
+		listModel.addElement("And");
+		listModel.addElement("Quincy");
+		listModel.addElement("Are");
+		listModel.addElement("Working");
+		listModel.addElement("On");
+		listModel.addElement("A");
+		listModel.addElement("Cooking");
+		listModel.addElement("/");
+		listModel.addElement("Recipe");
+		listModel.addElement("Program");
+		listModel.addElement("Thing");
+		listModel.addElement("Lol");
+		listModel.addElement("Idk");
+		listModel.addElement("What I'm");
+		listModel.addElement("Doing");
+		listModel.addElement("(DONT ASK)");
+		listModel.addElement("GG NO RE");
 
 		//On press of a list, we should be able to "go to" that specific recipe
 		JList list = new JList(listModel);

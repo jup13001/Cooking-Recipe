@@ -8,50 +8,64 @@ public class Menu
 	int counter; 
 	char firstLetter;
 	int i;
-	
-	public Menu(Recipe input)
-	{
-		recipeName = input;
-	}
+	public Menu(){}
+
 	public void put(Recipe recipeName)
 	{
-		while (map.containsKey(recipeName.get_Name().charAt(0))) //if the map contains a key with the same first letter of the recipe name, put it in the map 
+		char firstcharofRecipeName = recipeName.get_Name().charAt(0); 
+		int ascii = recipeName.get_Name().charAt(0);  
+		
+		if (map.containsKey(firstcharofRecipeName))
 		{
-			//change the charAt to int for all lower case 
-			//Get the first letter of the Name in recipeName
-			 
-			int ascii = recipeName.get_Name().charAt(0); 
-			switch(ascii)
-			{//convert it to ASCII
-			case 1: for (i = 0; i<64 && 123< i && i < 127; i++)  //incrementing the values so that it covers other characters .
-			
+			map.put(ascii, recipeName);
+		}
+		else if(map.isEmpty() || !map.containsKey(firstcharofRecipeName))
+		{
+			//convert it to ASCII
+			for (i = 0; i<64 && 123< i && i < 127; i++) 
+			{ //incrementing the values so that it covers other characters .
 				if (ascii == i)
 				{
 				System.out.println("Invalid, please rename your recipe");
-				return;
+				//call action button and have a pop up that says rename your recipe
 				}
-				break;
-			//change the ASCII letter to lower case
-			case 2: for(i = 0; 65 < i && i < 97; i++)
-			
-				if (ascii == i)
+				
+				else
 				{
-					ascii = ascii + 32;
-					//System.out.println(counter);
-					//System.out.println(ascii);
-					//System.out.println(recipeName.get_Name().charAt(0));
-					//System.out.println(recipeName.get_Name());
+				//change the ASCII letter to lower case
+					for(i = 0; 65 < i && i < 97; i++)
+					{
+						if (ascii == i)
+						{
+							int lowerletterASCII = ascii + 32;
+							Recipe newRecipe = new Recipe();
+							map.put(lowerletterASCII, newRecipe);
+						}
+				
+					}
 				}
-				break;
 			}
-			counter++;
-			System.out.println(counter);
-			System.out.println(ascii);
-			System.out.println(recipeName.get_Name().charAt(0));
-			System.out.println(recipeName.get_Name());
-			map.put(ascii, recipeName); //put the (ASCII, recipeName) into the map where the ASCII is the key/placeholder and recipeName is the value. 
-		}
-
+		}	
 	}
 	
+	public void remove(Recipe recipeName)
+	{
+		char firstcharofRecipeName = recipeName.get_Name().charAt(0); 
+		int ascii = recipeName.get_Name().charAt(0);  
+		
+		if (map.containsKey(firstcharofRecipeName))
+		{
+			map.remove(ascii, recipeName);
+		}
+		else
+			System.out.println("Does not exist");
+	}
+	
+	public Recipe getrecipeName()
+	{
+		return recipeName;
+	}
+	
+	
+
 }

@@ -34,6 +34,12 @@ import javax.swing.JTable;
 import javax.swing.JPopupMenu;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ListModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
+import javax.swing.JScrollBar;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.border.MatteBorder;
 
 
 public class RecipeGUI {
@@ -46,9 +52,9 @@ public class RecipeGUI {
 	private JTextField txtHours;
 	private JTextField txtMins;
 	private JLabel lblTimer;
-	private JTextField ingredients_textField;
-	private JTextField instructions_textField;
 	private final Action action = new SwingAction();
+	private JTextField textField_1;
+	private JTable table;
 	/**
 	 * Launch the application.
 	 */
@@ -77,7 +83,7 @@ public class RecipeGUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 496, 592);
+		frame.setBounds(100, 100, 618, 621);
 		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
@@ -147,7 +153,7 @@ public class RecipeGUI {
 		btnStartTimer.setBounds(356, 476, 110, 25);
 		selectedRecipe.add(btnStartTimer);
 		
-		JButton btnEndTimer = new JButton("Reset Timer"); //Need to figure out how to actually just "Stop/resume" the timer
+		JButton btnEndTimer = new JButton("End Timer"); //Need to figure out how to actually just "Stop/resume" the timer
 		btnEndTimer.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent arg0) {
 				//End Timer
@@ -163,6 +169,8 @@ public class RecipeGUI {
 		
 		//list model is the list of recipes in the menu
 		DefaultListModel listModel = new DefaultListModel();
+		DefaultListModel instructionListModel = new DefaultListModel();
+		DefaultListModel ingredientsListModel = new DefaultListModel();
 		
 		JButton removeSelectedRecipe = new JButton("Remove Recipe");
 		removeSelectedRecipe.addActionListener(new ActionListener() {
@@ -224,58 +232,58 @@ public class RecipeGUI {
 		inputRecipe.add(btnInputBack);
 
 		textField = new JTextField();
-		textField.setBounds(158, 53, 282, 29);
+		textField.setBounds(203, 54, 282, 29);
 		inputRecipe.add(textField);
 		textField.setColumns(10);
 
 		JLabel lblRecName = new JLabel("Recipe name:");
 		lblRecName.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblRecName.setBounds(22, 50, 150, 29);
+		lblRecName.setBounds(54, 54, 150, 29);
 		inputRecipe.add(lblRecName);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(12, 95, 454, 9);
+		separator.setBounds(12, 95, 580, 9);
 		inputRecipe.add(separator);
 
 		JLabel lblEnterIngredients = new JLabel("Enter Ingredients");
 		lblEnterIngredients.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblEnterIngredients.setBounds(146, 95, 161, 38);
+		lblEnterIngredients.setBounds(213, 94, 161, 38);
 		inputRecipe.add(lblEnterIngredients);
 
 		JLabel lblEnterInstructions = new JLabel("Enter Instructions");
 		lblEnterInstructions.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblEnterInstructions.setBounds(146, 258, 161, 38);
+		lblEnterInstructions.setBounds(215, 257, 161, 38);
 		inputRecipe.add(lblEnterInstructions);
 
-		JLabel lblGetTimer = new JLabel("Time:");
+		JLabel lblGetTimer = new JLabel("Overall Time:");
 		lblGetTimer.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblGetTimer.setBounds(22, 493, 70, 29);
+		lblGetTimer.setBounds(10, 533, 128, 38);
 		inputRecipe.add(lblGetTimer);
 
 		txtHours = new JTextField();
 		txtHours.setToolTipText("hours");
 		txtHours.setColumns(10);
-		txtHours.setBounds(88, 493, 56, 29);
+		txtHours.setBounds(148, 542, 56, 29);
 		inputRecipe.add(txtHours);
 
 		txtMins = new JTextField();
 		txtMins.setToolTipText("mins");
 		txtMins.setColumns(10);
-		txtMins.setBounds(184, 493, 56, 29);
+		txtMins.setBounds(274, 542, 56, 29);
 		inputRecipe.add(txtMins);
 
 		JLabel lblHrs = new JLabel("hours");
-		lblHrs.setBounds(146, 493, 37, 29);
+		lblHrs.setBounds(213, 542, 37, 29);
 		inputRecipe.add(lblHrs);
 
 		JLabel lblMinutes = new JLabel("minutes");
-		lblMinutes.setBounds(240, 493, 50, 29);
+		lblMinutes.setBounds(340, 542, 50, 29);
 		inputRecipe.add(lblMinutes);
 		
 		
 		
 		JButton Done = new JButton("Done");
-		Done.setBounds(339, 493, 127, 29);
+		Done.setBounds(465, 542, 127, 29);
 		inputRecipe.add(Done);
 		
 		Done.addActionListener(new ActionListener() {
@@ -286,6 +294,7 @@ public class RecipeGUI {
 				Recipe newRecipeName;
 				JFrame parent = new JFrame();
 				String warningMessage =  "Oops! \nLooks like there is already an exisiting recipe with that name! \nPlease rename your recipe";
+				String emptywarningMessage = "Please insert a recipe name";
 				if (listModel.isEmpty())
 				{
 					newRecipeName = new Recipe(recipeName);
@@ -314,7 +323,7 @@ public class RecipeGUI {
 				}
 				else if (recipeName.isEmpty())
 				{
-					JOptionPane.showMessageDialog(parent, warningMessage);
+					JOptionPane.showMessageDialog(parent, emptywarningMessage);
 					if (listModel.contains(recipeName))
 					{
 						JOptionPane.showMessageDialog(parent, warningMessage);
@@ -338,18 +347,49 @@ public class RecipeGUI {
 		)
 			;
 		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(12, 131, 580, 115);
+		inputRecipe.add(scrollPane_1);
 		
-		ingredients_textField = new JTextField();
-		ingredients_textField.setBounds(12, 132, 454, 115);
-		inputRecipe.add(ingredients_textField);
-		ingredients_textField.setColumns(10);
+		textField_1 = new JTextField();
+		textField_1.setHorizontalAlignment(SwingConstants.LEFT);
+		scrollPane_1.setViewportView(textField_1);
+		textField_1.setColumns(10);
 		
-		instructions_textField = new JTextField();
-		instructions_textField.setBounds(12, 307, 454, 140);
-		inputRecipe.add(instructions_textField);
-		instructions_textField.setColumns(10);
+		table = new JTable();
+		table.setBackground(Color.DARK_GRAY);
+		table.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+			},
+			new String[] {
+				"Instructions", "Hours", "Min"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, Integer.class, Integer.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		table.getColumnModel().getColumn(0).setPreferredWidth(200);
+		table.getColumnModel().getColumn(0).setMinWidth(20);
+		table.getColumnModel().getColumn(0).setMaxWidth(300);
+		table.getColumnModel().getColumn(1).setPreferredWidth(45);
+		table.getColumnModel().getColumn(2).setPreferredWidth(45);
+		table.setBounds(12, 412, 265, -91);
+		inputRecipe.add(table);
+		//listModel 
 		
-		
+		instructionListModel.addElement("Add sugar");
+		ingredientsListModel.addElement("sugar");
 		
 
 		//OTHER STUFF

@@ -40,6 +40,7 @@ import javax.swing.UIManager;
 import javax.swing.JScrollBar;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.border.MatteBorder;
+import javax.swing.DefaultComboBoxModel;
 
 
 public class RecipeGUI {
@@ -49,8 +50,6 @@ public class RecipeGUI {
 	public Timer timer;
 	private JFrame frame;
 	private JTextField textField;
-	private JTextField txtHours;
-	private JTextField txtMins;
 	private JLabel lblTimer;
 	private final Action action = new SwingAction();
 	private JTextField textField_1;
@@ -80,7 +79,7 @@ public class RecipeGUI {
 
 	/**
 	 * Initialize the contents of the frame.
-	 */
+	 */	
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 618, 621);
@@ -260,18 +259,6 @@ public class RecipeGUI {
 		lblGetTimer.setBounds(10, 533, 128, 38);
 		inputRecipe.add(lblGetTimer);
 
-		txtHours = new JTextField();
-		txtHours.setToolTipText("hours");
-		txtHours.setColumns(10);
-		txtHours.setBounds(148, 542, 56, 29);
-		inputRecipe.add(txtHours);
-
-		txtMins = new JTextField();
-		txtMins.setToolTipText("mins");
-		txtMins.setColumns(10);
-		txtMins.setBounds(274, 542, 56, 29);
-		inputRecipe.add(txtMins);
-
 		JLabel lblHrs = new JLabel("hours");
 		lblHrs.setBounds(213, 542, 37, 29);
 		inputRecipe.add(lblHrs);
@@ -384,10 +371,24 @@ public class RecipeGUI {
 		table.getColumnModel().getColumn(0).setMaxWidth(300);
 		table.getColumnModel().getColumn(1).setPreferredWidth(45);
 		table.getColumnModel().getColumn(2).setPreferredWidth(45);
-		table.setBounds(12, 412, 265, -91);
+		table.setBounds(12, 331, 580, 163);
 		inputRecipe.add(table);
-		//listModel 
 		
+		JComboBox comboHours = new JComboBox(new Object[]{});
+		comboHours.setModel(new DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4" ,"5" ,"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}));
+		comboHours.setSelectedIndex(0);
+		comboHours.setMaximumRowCount(12);
+		comboHours.setBounds(138, 541, 66, 28);
+		inputRecipe.add(comboHours);
+		
+		JComboBox comboMins = new JComboBox(new Object[]{});
+		comboMins.setModel(new DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"}));
+		comboMins.setSelectedIndex(0);
+		comboMins.setMaximumRowCount(12);
+		comboMins.setBounds(262, 541, 66, 28);
+		inputRecipe.add(comboMins);
+		
+		//listModel 
 		instructionListModel.addElement("Add sugar");
 		ingredientsListModel.addElement("sugar");
 		

@@ -1,6 +1,5 @@
 import java.awt.*;
 import javax.swing.JFrame;
-import java.awt.GridLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -26,8 +25,10 @@ import javax.swing.Timer;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.border.LineBorder;
 import javax.swing.JTable;
@@ -39,8 +40,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.UIManager;
 import javax.swing.JScrollBar;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.border.MatteBorder;
+import javax.swing.JTextPane;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.PopupMenuEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Box;
 
 
 public class RecipeGUI {
@@ -52,8 +58,8 @@ public class RecipeGUI {
 	private JTextField textField;
 	private JLabel lblTimer;
 	private final Action action = new SwingAction();
-	private JTextField textField_1;
 	private JTable table;
+	private JTable ingredientsTable;
 	/**
 	 * Launch the application.
 	 */
@@ -79,7 +85,7 @@ public class RecipeGUI {
 
 	/**
 	 * Initialize the contents of the frame.
-	 */	
+	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 618, 621);
@@ -96,6 +102,10 @@ public class RecipeGUI {
 		inputRecipe.setBorder(new LineBorder(new Color(0, 0, 0)));
 		JPanel firstScreen = new JPanel();
 		JPanel selectedRecipe = new JPanel();
+		
+		DefaultListModel listModel = new DefaultListModel();
+		DefaultListModel instructionListModel = new DefaultListModel();
+		DefaultListModel ingredientsListModel = new DefaultListModel();
 
 		mainPanel.add(firstScreen, "First Screen");
 		mainPanel.add(selectRecipe, "Select Recipe");
@@ -103,24 +113,23 @@ public class RecipeGUI {
 		mainPanel.add(selectedRecipe, "Selected Recipe");
 		selectedRecipe.setLayout(null);
 
-		JLabel lblrecipeName = new JLabel("(Recipe name)", SwingConstants.CENTER);
-		lblrecipeName.setBounds(79, 33, 325, 30);
-		selectedRecipe.add(lblrecipeName);
+		
+	
 
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(22, 68, 444, 8);
 		selectedRecipe.add(separator_1);
 
-		JLabel lbllistOfIngredients = new JLabel("(List of ingredients?)");
-		lbllistOfIngredients.setBounds(12, 69, 237, 111);
+		JLabel lbllistOfIngredients = new JLabel("Ingredients");
+		lbllistOfIngredients.setBounds(205, 68, 89, 43);
 		selectedRecipe.add(lbllistOfIngredients);
 
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(12, 178, 454, 13);
+		separator_2.setBounds(12, 208, 454, 13);
 		selectedRecipe.add(separator_2);
 
-		JLabel lbltheInstructions = new JLabel("(The instructions)");
-		lbltheInstructions.setBounds(12, 193, 454, 222);
+		JLabel lbltheInstructions = new JLabel("Instructions");
+		lbltheInstructions.setBounds(205, 219, 89, 37);
 		selectedRecipe.add(lbltheInstructions);
 
 		lblTimer = new JLabel("00:00", SwingConstants.CENTER);
@@ -167,15 +176,12 @@ public class RecipeGUI {
 		selectedRecipe.add(list_1);
 		
 		//list model is the list of recipes in the menu
-		DefaultListModel listModel = new DefaultListModel();
-		DefaultListModel instructionListModel = new DefaultListModel();
-		DefaultListModel ingredientsListModel = new DefaultListModel();
+	
 		
 		JButton removeSelectedRecipe = new JButton("Remove Recipe");
 		removeSelectedRecipe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				listModel.removeElement(lblrecipeName.getText());
-				cardLayout.show(mainPanel, "Select Recipe");
+				
 			}
 		});
 		removeSelectedRecipe.setBounds(12, 507, 126, 25);
@@ -184,6 +190,7 @@ public class RecipeGUI {
 		JButton editSelectedRecipe = new JButton("Edit Recipe");
 		editSelectedRecipe.setBounds(12, 476, 126, 23);
 		selectedRecipe.add(editSelectedRecipe);
+		
 
 		firstScreen.setLayout(null);
 		selectRecipe.setLayout(null);
@@ -267,6 +274,11 @@ public class RecipeGUI {
 		lblMinutes.setBounds(340, 542, 50, 29);
 		inputRecipe.add(lblMinutes);
 		
+		DefaultTableModel ingredients = new DefaultTableModel();
+		ingredientsTable = new JTable();
+		table = new JTable();
+		DefaultTableModel instructions = new DefaultTableModel();
+		
 		
 		
 		JButton Done = new JButton("Done");
@@ -282,10 +294,14 @@ public class RecipeGUI {
 				JFrame parent = new JFrame();
 				String warningMessage =  "Oops! \nLooks like there is already an exisiting recipe with that name! \nPlease rename your recipe";
 				String emptywarningMessage = "Please insert a recipe name";
+				
+				
+				System.out.println(ingredients);
 				if (listModel.isEmpty())
 				{
 					newRecipeName = new Recipe(recipeName);
 					listModel.addElement(newRecipeName.get_Name());
+					
 				}
 				else if (listModel.contains(recipeName))
 				{
@@ -328,7 +344,28 @@ public class RecipeGUI {
 				{
 					newRecipeName = new Recipe(recipeName);
 					listModel.addElement(newRecipeName.get_Name());
+					
 				}	
+				if(!recipeName.isEmpty() && ingredientsTable.getValueAt(0, 0) != null && table.getValueAt(0, 0) != null)
+				{
+				int messageType = JOptionPane.QUESTION_MESSAGE;
+				String[] options = {"Menu", "Continue "};
+				int code = JOptionPane.showOptionDialog(null, "Would you like to continue or return to main menu?", "Options", 0, messageType, null, options, "Menu");
+				if (code == 0)
+				{
+					cardLayout.show(mainPanel, "First Screen");
+				}
+				else if(code == 1 )
+				{
+				frame.setVisible(false);
+				recipeOut newpanel = new recipeOut();
+				newpanel.NewScreen();
+				
+				
+				
+				}
+				
+				}
 				
 			}}
 		)
@@ -338,57 +375,87 @@ public class RecipeGUI {
 		scrollPane_1.setBounds(12, 131, 580, 115);
 		inputRecipe.add(scrollPane_1);
 		
-		textField_1 = new JTextField();
-		textField_1.setHorizontalAlignment(SwingConstants.LEFT);
-		scrollPane_1.setViewportView(textField_1);
-		textField_1.setColumns(10);
 		
-		table = new JTable();
-		table.setBackground(Color.DARK_GRAY);
+		ingredientsTable.setModel(ingredients);
+			ingredients.setColumnCount(2);
+				ingredients.setRowCount(5);
+		scrollPane_1.setViewportView(ingredientsTable);
+		ingredientsTable.getTableHeader().setReorderingAllowed(false);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(104, 306, 384, 107);
+		inputRecipe.add(scrollPane_2);
+		
+		
+		table.setModel(instructions);
+		scrollPane_2.setViewportView(table);
+		table.setBackground(Color.WHITE);
 		table.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-			},
-			new String[] {
-				"Instructions", "Hours", "Min"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, Integer.class, Integer.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
+		instructions.setColumnCount(3);
+		instructions.setRowCount(5);
+		table.getTableHeader().setReorderingAllowed(false);
+  		
+		JButton btnAddMoreFields = new JButton("Add More Fields");
+		btnAddMoreFields.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				 String[] typeofObject = {"Ingredients", "Instructions"};
+				 Integer[] amount = {1,2, 3, 4, 5, 6, 7, 8, 9, 10};
+			        JComboBox combo = new JComboBox(typeofObject);
+			        JComboBox combo2 = new JComboBox(amount);
+			        JPanel panel = new JPanel(new GridLayout(0, 1));
+			        panel.add(new JLabel("Type of Object"));
+			        panel.add(combo);
+			        panel.add(new JLabel("Number of Fields"));
+			        panel.add(combo2);
+			        int result = JOptionPane.showConfirmDialog(null, panel, "Add More Fields",
+			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			       
+			        String resultofObject = combo.getSelectedItem().toString();
+			        int resultofField = (int) combo2.getSelectedItem();
+			      int current_row_of_ingredients = ingredients.getRowCount();
+			      int current_row_of_instructions = instructions.getRowCount();
+			      
+			        if (resultofObject.equals("Ingredients"))
+			        {
+			        ingredients.setRowCount(current_row_of_ingredients + resultofField);
+			        }
+			        if (resultofObject.equals("Instructions"))
+			        {
+			        	instructions.setRowCount(current_row_of_instructions + resultofField);
+			        }
+			        
 			}
 		});
+		btnAddMoreFields.setBounds(465, 493, 127, 29);
+		inputRecipe.add(btnAddMoreFields);
 		table.getColumnModel().getColumn(0).setPreferredWidth(200);
 		table.getColumnModel().getColumn(0).setMinWidth(20);
 		table.getColumnModel().getColumn(0).setMaxWidth(300);
 		table.getColumnModel().getColumn(1).setPreferredWidth(45);
-		table.getColumnModel().getColumn(2).setPreferredWidth(45);
-		table.setBounds(12, 331, 580, 163);
-		inputRecipe.add(table);
+		table.getColumnModel().getColumn(1).setMaxWidth(42);
+		table.getColumnModel().getColumn(2).setPreferredWidth(42);
+		table.getColumnModel().getColumn(2).setMaxWidth(42);
+		table.setBounds(12,331,580,163);
+		
+		
 		
 		JComboBox comboHours = new JComboBox(new Object[]{});
-		comboHours.setModel(new DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4" ,"5" ,"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}));
+		comboHours.setModel(new DefaultComboBoxModel
+				(new String[] {"0", "1", "2", "3", "4" ,"5" ,"6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}));
 		comboHours.setSelectedIndex(0);
 		comboHours.setMaximumRowCount(12);
 		comboHours.setBounds(138, 541, 66, 28);
 		inputRecipe.add(comboHours);
-		
-		JComboBox comboMins = new JComboBox(new Object[]{});
-		comboMins.setModel(new DefaultComboBoxModel(new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"}));
-		comboMins.setSelectedIndex(0);
-		comboMins.setMaximumRowCount(12);
-		comboMins.setBounds(262, 541, 66, 28);
+		 		
+		 JComboBox comboMins = new JComboBox(new Object[]{});
+		 comboMins.setModel(new DefaultComboBoxModel
+				 (new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"}));
+		 comboMins.setSelectedIndex(0);
+		 comboMins.setMaximumRowCount(12);
+		 comboMins.setBounds(262, 541, 66, 28);
 		inputRecipe.add(comboMins);
+		 		
 		
-		//listModel 
 		instructionListModel.addElement("Add sugar");
 		ingredientsListModel.addElement("sugar");
 		
@@ -435,7 +502,15 @@ public class RecipeGUI {
 			if (e.getClickCount() == 2) 
 			{
 				cardLayout.show(mainPanel, "Selected Recipe");
-				//Put info from the selected recipe into the fields on this panel
+				String recipeSelectedName = list.getSelectedValue().toString();
+				Recipe recipe = new Recipe(recipeSelectedName);
+				JLabel lblRecipeName = new JLabel(recipe.get_Name(), SwingConstants.CENTER);
+				lblRecipeName.setBounds(79, 33, 325, 30);
+				selectedRecipe.add(lblRecipeName);
+				//JTable ingredients = new JTable(recipe.get_Ingredients().getAll_Ingredients(), SwingConstants.CENTER);
+				//ingredients.setBounds(30, 70, 500, 700);
+				//selectedRecipe.add(ingredients);
+				
 			}
 		}
 		});
@@ -446,6 +521,9 @@ public class RecipeGUI {
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				cardLayout.show(mainPanel, "Selected Recipe");
 				//Put info from the selected recipe into the fields on this panel
+				
+				 
+				
 			}
 		}
 		});
@@ -475,6 +553,7 @@ public class RecipeGUI {
 		btnRemoveRecipeinList.setBounds(320, 11, 150, 29);
 		selectRecipe.add(btnRemoveRecipeinList);
 
+		
 	}
 	public class Clock implements ActionListener{
 		public Clock(int numb){

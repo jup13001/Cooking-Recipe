@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 public class recipeOut {
 
@@ -19,6 +20,11 @@ public class recipeOut {
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
+				}
+				try { 
+				    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+				    e.printStackTrace();
 				}
 			}
 		});

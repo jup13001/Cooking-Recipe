@@ -13,6 +13,8 @@ public class Recipe
 	public Instructions get_Instructions(){ return recipe_Instructions;}
 	public Ingredients get_Ingredients() { return recipe_Ingredients;}
 	public String get_Name(){ return name; }
+	//public Ingredients get_Ingredients() { return recipe_Ingredients;}
+	
 	public void remove_Recipe(String recipeName) 
 	{
 		recipeName = null;
@@ -22,4 +24,4 @@ public class Recipe
 	
 	
 	
-}
+}	
